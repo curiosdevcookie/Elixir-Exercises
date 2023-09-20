@@ -4,7 +4,7 @@ defmodule LiveViewStudioWeb.LightLive do
   def render(assigns) do
     ~H"""
     <.header>
-     <%= @brightness_level  %>
+     <%= @brightness_level %>
 
     </.header>
     <.main>
