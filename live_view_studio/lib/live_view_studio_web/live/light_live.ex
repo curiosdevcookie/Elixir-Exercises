@@ -9,6 +9,9 @@ defmodule LiveViewStudioWeb.LightLive do
     </.header>
     <.main>
     <section class="flex gap-4 items-center">
+     <.button
+        phx-click="off"
+      >Off</.button>
       <.button
         phx-click="down"
         phx-disable-with="Decreasing..."
@@ -25,6 +28,9 @@ defmodule LiveViewStudioWeb.LightLive do
         phx-disable-with="Increasing..."
         phx-disable-with-target="self"
       >Increase</.button>
+           <.button
+        phx-click="on"
+      >On</.button>
     </section>
 
     <section>
@@ -60,8 +66,35 @@ defmodule LiveViewStudioWeb.LightLive do
     {:ok, socket}
   end
 
+  def handle_event("off", _, socket) do
+    brightness = 0
+    brightness_color = calculate_brightness_color(brightness)
+
+    socket =
+      socket
+      |> assign(:brightness, brightness)
+      |> assign(:brightness_level, "Light off")
+      |> assign(:brightness_color, brightness_color)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("on", _, socket) do
+    brightness = 100
+    brightness_color = calculate_brightness_color(brightness)
+
+    socket =
+      socket
+      |> assign(:brightness, brightness)
+      |> assign(:brightness_level, "Light on")
+      |> assign(:brightness_color, brightness_color)
+
+    {:noreply, socket}
+  end
+
   def handle_event("down", _, socket) do
     brightness = socket.assigns.brightness - 10
+    brightness = max(brightness, 0)
     brightness_color = calculate_brightness_color(brightness)
 
     socket =
@@ -75,6 +108,7 @@ defmodule LiveViewStudioWeb.LightLive do
 
   def handle_event("up", _, socket) do
     brightness = socket.assigns.brightness + 10
+    brightness = min(brightness, 100)
     brightness_color = calculate_brightness_color(brightness)
 
     socket =
